@@ -1,0 +1,39 @@
+--- joyce-2.2.12/bin/JoycePcwKeyboard.cxx	2017-07-05 23:03:43.000000000 +0200
++++ joyce-2.2.12-patch/bin/JoycePcwKeyboard.cxx	2018-11-03 09:00:44.748731410 +0100
+@@ -37,6 +37,20 @@
+ #define FIRE2 32
+ 
+ //
++// Scancode -> SDL keysym default PC keyboard keymap
++//
++static int gl_scancodeMap[] = {
++	0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48,
++	45, 61, 8, 9, 113, 119, 101, 114, 116, 121, 117, 105, 111, 112, 91, 93,
++	13, 306, 97, 115, 100, 102, 103, 104, 106, 107, 108, 59, 39, 96, 304,
++	92, 122, 120, 99, 118, 98, 110, 109, 44, 46, 47, 303, 268, 308, 32, 301,
++	282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 300, 302, 263, 264,
++	265, 269, 260, 261, 262, 270, 257, 258, 259, 256, 266, 0, 0, 60, 292,
++	293, 0, 0, 0, 0, 0, 0, 0, 271, 305, 267, 0, 307, 0, 278, 273, 280, 276,
++	275, 279, 274, 281, 277, 127, 0, 0, 0, 0, 0, 0, 0, 19
++};
++
++//
+ // The default PC -> PCW keymap
+ //
+ static Uint16 gl_defaultMap[] = { 
+@@ -377,7 +391,14 @@
+ 	if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) 
+ 	{
+ 		b = (e.type == SDL_KEYDOWN);
+-		keysym = e.key.keysym.sym; 
++		if (e.key.keysym.scancode < sizeof(gl_scancodeMap))
++		{
++			keysym = (SDLKey)gl_scancodeMap[e.key.keysym.scancode];
++		}
++		else
++		{
++			keysym = e.key.keysym.sym;
++		}
+ 
+ //		printf("Key event: b=%d keysym=%d\n", b, keysym);
+ 	}
